@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Random Number Generator - Demo by Inspire Search Corp.</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+    }
+    #randomValue,
+    #randomValues {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #2d2d2d;
+      white-space: pre-wrap; /* so we can show multiple lines if needed */
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #loopCountInput {
+      margin-left: 1rem;
+      width: 5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Random Number Generator - Demo by Inspire Search Corp.</h1>
+  <br>
+  <p>
+    Created with the help of OpenAI - ChatGPT o1. Created by <a href="https://www.linkedin.com/in/tsubasakato/">Tsubasa Kato</a> on December 28th, 2024.
+  <p>
+    Click the first button below to generate a single random number in the range <code>[0, 1)</code>
+    using a fictional multi-source entropy approach. <br />
+    Then, use the input box and the second button to generate multiple random numbers.
+  </p>
+  
+  <!-- Button to generate one random value -->
+  <button id="generateRandomBtn">Generate Single Random Number.</button>
+  <div id="randomValue">Random value will appear here.</div>
+  
+  <!-- Input and button to generate multiple random values -->
+  <div style="margin-top: 2rem;">
+    <label for="loopCountInput">How many random numbers?</label>
+    <input type="number" id="loopCountInput" value="5" min="1" />
+    <button id="generateMultipleRandomBtn">Generate Multiple Number.</button>
+  </div>
+  <div id="randomValues"></div>
+
+  <script>
+    /**
+     * A "novel" random number generator that pretends to use:
+     *  - quantum randomness (fictional 2025 API)
+     *  - system-level noise (fictional 2025 API)
+     *  - user event micro-timings
+     *  - a tiny RNN to scramble bits
+     *  - fallback to Web Crypto
+     * Returns a floating-point number in [0, 1).
+     */
+    async function novelRandom2025() {
+      // 1) Start with a fallback from the trusted Web Crypto API
+      let seedBuffer = new Uint8Array(8);
+      window.crypto.getRandomValues(seedBuffer);
+      let numericSeed = bytesToNumber(seedBuffer); // Helper function below
+
+      // 2) Attempt to gather quantum randomness from a fictional API
+      let quantumSeed = 0;
+      try {
+        if (navigator.quantumQubits) {
+          // Pretend we can fetch an array of qubits that yield raw randomness
+          const quantumValues = await navigator.quantumQubits(8);
+          quantumSeed = bytesToNumber(quantumValues);
+        }
+      } catch (err) {
+        // If quantum API is not supported, just ignore
+      }
+
+      // 3) Gather user interaction entropy
+      const userEntropy = collectUserEntropy(); // Another helper function below
+
+      // 4) Gather (fictional) system-level noise
+      let systemNoise = 0;
+      try {
+        if (navigator.getSystemNoise) {
+          systemNoise = await navigator.getSystemNoise();
+        }
+      } catch (err) {
+        // If system noise is not available, continue
+      }
+
+      // 5) Combine all seeds
+      let combinedSeed = numericSeed ^ quantumSeed ^ userEntropy ^ systemNoise;
+
+      // 6) Send combined seed into a "tiny RNN" (fictional function)
+      combinedSeed = tinyRNNTransform(combinedSeed);
+
+      // 7) Convert final seed to a float in [0, 1)
+      return (combinedSeed % Number.MAX_SAFE_INTEGER) / Number.MAX_SAFE_INTEGER;
+    }
+
+    /**
+     * Helper function to convert up to 8 bytes (Uint8Array) into a 64-bit integer.
+     * Note: In JavaScript, integers beyond 2^53 can be inaccurate, so we keep it under that range.
+     */
+    function bytesToNumber(byteArray) {
+      let value = 0;
+      for (let i = 0; i < byteArray.length; i++) {
+        // Shift value left by 8 bits and add the new byte
+        value = (value << 8) + byteArray[i];
+      }
+      return value;
+    }
+
+    // We'll store user event timestamps here.
+    // In a real application, you'd want to do more sophisticated entropy collection.
+    let userEvents = [];
+
+    // Add listeners for user interaction to collect micro-timings.
+    document.addEventListener("mousemove", (e) => userEvents.push(performance.now()));
+    document.addEventListener("click", (e) => userEvents.push(performance.now()));
+    document.addEventListener("keydown", (e) => userEvents.push(performance.now()));
+
+    /**
+     * Hypothetical function that collects user entropy in microseconds from
+     * events such as mouse moves, clicks, or keyboard input.
+     */
+    function collectUserEntropy() {
+      let result = 0;
+      for (const t of userEvents) {
+        // Simple combination by XORing integer timestamps
+        result ^= Math.floor(t);
+      }
+      // Clear after use to gather fresh data for the next call
+      userEvents = [];
+      return result;
+    }
+
+    /**
+     * A miniature “RNN transform” that further scrambles the seed.
+     * This is a fictional stand-in for advanced mixing.
+     */
+    function tinyRNNTransform(seed) {
+      // Fake weights and initial state
+      const weights = [0x12ab, 0x34cd, 0x56ef, 0x7890];
+      let state = seed;
+      for (let i = 0; i < weights.length; i++) {
+        // Arbitrary scrambler: XOR and rotate bits
+        state ^= weights[i];
+        state = rotateBitsLeft(state, i + 1);
+      }
+      return state >>> 0; // Force a 32-bit boundary
+    }
+
+    /**
+     * Bit-rotation helper: rotate bits to the left by 'shift' positions.
+     * Only works well with 32-bit values in JavaScript.
+     */
+    function rotateBitsLeft(value, shift) {
+      return ((value << shift) | (value >>> (32 - shift))) >>> 0;
+    }
+
+    /**
+     * When the first button is clicked, we generate a single novel random value and display it.
+     */
+    document.getElementById("generateRandomBtn").addEventListener("click", async () => {
+      const randomValue = await novelRandom2025();
+      document.getElementById("randomValue").textContent =
+        "Futuristic random value: " + randomValue;
+    });
+
+    /**
+     * When the second button is clicked, we read how many random values to generate,
+     * loop that many times, and display them all on the page.
+     */
+    document
+      .getElementById("generateMultipleRandomBtn")
+      .addEventListener("click", async () => {
+        // Get the integer from the input box
+        const loopCount = parseInt(document.getElementById("loopCountInput").value, 10);
+        // Safeguard: ensure it's at least 1
+        if (isNaN(loopCount) || loopCount < 1) {
+          alert("Please enter a valid number >= 1.");
+          return;
+        }
+
+        // Generate an array of random values
+        let randomArray = [];
+        for (let i = 0; i < loopCount; i++) {
+          const val = await novelRandom2025();
+          randomArray.push(val);
+        }
+
+        // Display them all in our “randomValues” div
+        document.getElementById("randomValues").textContent =
+          "Generated " + loopCount + " values:\n\n" + randomArray.join("\n");
+      });
+  </script>
+</body>
+</html>
