@@ -98,7 +98,8 @@
       combinedSeed = tinyRNNTransform(combinedSeed);
 
       // 7) Convert final seed to a float in [0, 1)
-      return (combinedSeed % Number.MAX_SAFE_INTEGER) / Number.MAX_SAFE_INTEGER;
+      // --- FIX HERE: Dividing by 2^32 ensures a float in [0,1).
+      return combinedSeed / 0x100000000; 
     }
 
     /**
